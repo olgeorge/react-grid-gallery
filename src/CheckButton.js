@@ -113,4 +113,4 @@ CheckButton.defaultProps = {isSelectable: true,
                             parentHover: false,
                             hover: false};
 
-module.exports = CheckButton;
+export default CheckButton;

@@ -161,6 +161,20 @@ class Image extends Component {
             {this.props.item.customOverlay}
         </div>;
 
+        var backgroundImage = this.props.item.errorSrc ?
+            `url(${this.props.item.thumbnail}), url('${this.props.item.errorSrc}')` :
+            `url(${this.props.item.thumbnail})`;
+        var imgStyle = {
+            ...this.thumbnailStyle(),
+            backgroundImage: backgroundImage,
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+            //position: absolute;
+            backgroundPosition: 'center',
+            //height: 100%;
+            //width: 100%;
+        };
+
         return (
                 <div className="tile"
             key={"tile-"+this.props.index}
@@ -221,12 +235,10 @@ class Image extends Component {
             key={"tile-viewport-"+this.props.index}
             onClick={this.props.onClick ?
                      (e) => this.props.onClick.call(this, this.props.index, e) : null}>
-                <img
-            key={"img-"+this.props.index}
-            src={this.props.item.thumbnail}
-            alt={alt}
-            title={this.props.item.caption}
-            style={this.thumbnailStyle()} />
+                <div
+                    key={"img-"+this.props.index}
+                    title={this.props.item.caption}
+                    style={imgStyle}></div>
                 </div>
                 {this.props.item.thumbnailCaption && (
                         <div className="tile-description"

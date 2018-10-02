@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Lightbox from 'react-images';
+import Lightbox from '../../lightbox/src/Lightbox';
 import Image from './Image.js';
 
 class Gallery extends Component {
@@ -60,7 +60,9 @@ class Gallery extends Component {
             event.preventDefault();
         }
         if (this.props.lightboxWillOpen) {
-            this.props.lightboxWillOpen.call(this, index);
+            if (this.props.lightboxWillOpen.call(this, index) === false) {
+                return;
+            }
         }
         if (this.props.currentImageWillChange) {
             this.props.currentImageWillChange.call(this, index);
@@ -81,7 +83,7 @@ class Gallery extends Component {
         }
 
         this.setState({
-            currentImage: 0,
+            currentImage: this.props.images.findIndex(({ disableLightbox }) => !disableLightbox),
             lightboxIsOpen: false
         });
     }
@@ -257,7 +259,7 @@ class Gallery extends Component {
             index={idx}
             margin={this.props.margin}
             height={this.props.rowHeight}
-            isSelectable={this.props.enableImageSelection}
+            isSelectable={this.props.enableImageSelection && !item.disableSelect}
             onClick={this.getOnClickThumbnailFn()}
             onSelectImage={this.onSelectImage}
             tagStyle={this.props.tagStyle}
@@ -286,7 +288,7 @@ class Gallery extends Component {
             images={this.props.images}
             backdropClosesModal={this.props.backdropClosesModal}
             currentImage={this.state.currentImage}
-	    preloadNextImage={this.props.preloadNextImage}
+            preloadNextImage={this.props.preloadNextImage}
             customControls={this.props.customControls}
             enableKeyboardInput={this.props.enableKeyboardInput}
             imageCountSeparator={this.props.imageCountSeparator}
@@ -301,6 +303,7 @@ class Gallery extends Component {
             theme={this.props.theme}
             onClickThumbnail={this.getOnClickLightboxThumbnailFn()}
             showThumbnails={this.props.showLightboxThumbnails}
+            imageView={this.props.imageView}
                 />
                 </div>
         );
@@ -312,7 +315,8 @@ Gallery.displayName = 'Gallery';
 Gallery.propTypes = {
     images: PropTypes.arrayOf(
         PropTypes.shape({
-            src: PropTypes.string.isRequired,
+            src: PropTypes.string,
+            errorSrc: PropTypes.string,
             nano: PropTypes.string,
             alt: PropTypes.string,
             thumbnail: PropTypes.string.isRequired,
@@ -324,7 +328,7 @@ Gallery.propTypes = {
                     title: PropTypes.string.isRequired
                 })
             ),
-            thumbnailWidth: PropTypes.number.isRequired,
+            thumbnailWidth: PropTypes.number,
             thumbnailHeight: PropTypes.number.isRequired,
             isSelected: PropTypes.bool,
             thumbnailCaption: PropTypes.oneOfType([
@@ -362,7 +366,8 @@ Gallery.propTypes = {
     thumbnailStyle: PropTypes.func,
     showLightboxThumbnails: PropTypes.bool,
     onClickLightboxThumbnail: PropTypes.func,
-    tagStyle: PropTypes.object
+    tagStyle: PropTypes.object,
+    imageView: PropTypes.func
 };
 
 Gallery.defaultProps = {
@@ -383,4 +388,4 @@ Gallery.defaultProps = {
     showLightboxThumbnails: false
 };
 
-module.exports = Gallery;
+export default Gallery;
