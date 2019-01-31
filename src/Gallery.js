@@ -115,7 +115,7 @@ class Gallery extends Component {
     onSelectImage (index, event) {
         event.preventDefault();
         if(this.props.onSelectImage)
-            this.props.onSelectImage.call(this, index, this.state.images[index]);
+            this.props.onSelectImage.call(this, index, this.state.images[index], event);
     }
 
     gotoImage (index) {
